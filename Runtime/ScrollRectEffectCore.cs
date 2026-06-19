@@ -14,7 +14,7 @@ namespace LLib
         
         private List<ScrollItem> _items = new();
         private ScrollRect _scrollRect;
-        
+        private int _childCountCache = -1;
         
         public IReadOnlyList<ScrollRectEffect> Effects => BaseEffects;
         public IReadOnlyList<ScrollItem> Items => _items;
@@ -22,26 +22,26 @@ namespace LLib
         private RectTransform ViewPort => _scrollRect.viewport;
         private RectTransform Content => _scrollRect.content;
 
-
-    
         
         protected virtual void Awake()
         {
             _scrollRect = GetComponent<ScrollRect>();
-            InitItems();
         }
 
         protected virtual void LateUpdate()
         {
+            int currentChildCount = transform.childCount;
+    
+            if (_childCountCache != currentChildCount)
+            {
+                RefreshItems();
+        
+                _childCountCache = currentChildCount;
+            }
+            
             UpdateItems();
         }
-        
-        private void OnTransformChildrenChanged()
-        {
-            InitItems();
-        }
-        
-        
+  
         
         public void UpdateItems()
         {
@@ -91,16 +91,11 @@ namespace LLib
 
             foreach (var effect in Effects)
             {
-                effect.OnUpdate(_items);
+                effect.OnUpdated(_items);
             }
         }
         
-        protected virtual void ApplyEffect(RectTransform target, Vector2 direction, float curvedValue)
-        {
-            
-        }
-        
-        private void InitItems()
+        private void RefreshItems()
         {
             _items.Clear();
 
@@ -110,6 +105,11 @@ namespace LLib
                 {
                     RectTransform = child
                 });
+            }
+            
+            foreach (var effect in Effects)
+            {
+                effect.OnRefreshed(_items);
             }
         }
     }

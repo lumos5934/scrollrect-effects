@@ -16,9 +16,17 @@ namespace LLib
         private int _cachedChildCount;
         private Coroutine _snapCoroutine;
         
+        
+        public AnimationCurve SnapCurve
+        {
+            get => _snapCurve;
+            set => _snapCurve = value;
+        }
+        
         private RectTransform ViewPort => _scrollRect.viewport;
         private RectTransform Content => _scrollRect.content;
 
+        
         public event Action<RectTransform> OnSnapped;
 
         
@@ -30,10 +38,6 @@ namespace LLib
             _rectTransform = GetComponent<RectTransform>();
         }
 
-        public override void OnUpdate(IReadOnlyList<ScrollItem> items)
-        {
-        }
-
         private void OnEnable()
         {
             IEnumerator DelaySnapCoroutine()
@@ -43,11 +47,6 @@ namespace LLib
             }
             
             StartCoroutine(DelaySnapCoroutine());
-        }
-        
-        private void OnTransformChildrenChanged()
-        {
-            Snap();
         }
         
         public void OnBeginDrag(PointerEventData eventData)
@@ -65,8 +64,18 @@ namespace LLib
             Snap();
         }
 
-        
 
+        public override void OnRefreshed(IReadOnlyList<ScrollItem> items)
+        {
+            Snap();
+        }
+
+        public override void OnUpdated(IReadOnlyList<ScrollItem> items)
+        {
+        }
+        
+        
+        
         public void Snap(bool useAnimation = true)
         {
             if (Content == null || 
@@ -91,6 +100,7 @@ namespace LLib
 
             if (centerItem.RectTransform != null)
             {
+                
                 StartSnapCoroutine(centerItem.RectTransform, useAnimation);
             }
         }

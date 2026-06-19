@@ -19,7 +19,11 @@ namespace LLib
         [SerializeField] private Vector3 _edge = Vector3.zero;
 
 
-        public override void OnUpdate(IReadOnlyList<ScrollItem> items)
+        public override void OnRefreshed(IReadOnlyList<ScrollItem> items)
+        {
+        }
+
+        public override void OnUpdated(IReadOnlyList<ScrollItem> items)
         {
             foreach (var item in items)
             {

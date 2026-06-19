@@ -25,7 +25,8 @@ namespace LLib
             _effectCore.BaseEffects.Remove(this);
         }
 
-        public abstract void OnUpdate(IReadOnlyList<ScrollItem> items);
+        public abstract void OnRefreshed(IReadOnlyList<ScrollItem> items);
+        public abstract void OnUpdated(IReadOnlyList<ScrollItem> items);
     }
 }
 
