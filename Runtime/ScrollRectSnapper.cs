@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,6 +19,9 @@ namespace LLib
         
         private RectTransform ViewPort => _scrollRect.viewport;
         private RectTransform Content => _scrollRect.content;
+
+
+        public event Action<RectTransform> OnSnapped;
 
 
         private void Awake()
@@ -61,6 +65,9 @@ namespace LLib
                 _snapCoroutine = null;
             }
         }
+        
+        
+        
         
 
         public void Snap(bool useAnimation = true)
@@ -166,7 +173,9 @@ namespace LLib
             }
             
             Content.localPosition = snapPos;
-
+            
+            OnSnapped?.Invoke(target);
+            
             _snapCoroutine = null;
         }
     }
